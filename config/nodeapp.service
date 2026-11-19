@@ -1,0 +1,33 @@
+[Unit]
+Description=Node.js Express app (deployed by AWS CodeDeploy)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=nodeapp
+Group=nodeapp
+WorkingDirectory=/opt/nodeapp
+Environment=NODE_ENV=production
+Environment=PORT=80
+ExecStart=/opt/nodejs/bin/node src/server.js
+Restart=on-failure
+RestartSec=5
+
+# Bind port 80 without running as root
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+
+# Sandboxing
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

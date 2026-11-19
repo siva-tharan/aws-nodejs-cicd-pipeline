@@ -1,0 +1,35 @@
+# CodeDeploy instructions for an EC2/On-Premises deployment.
+# Hooks run in this order: ApplicationStop -> BeforeInstall -> (files copied) ->
+# AfterInstall -> ApplicationStart -> ValidateService
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /opt/nodeapp
+
+# Redeployments replace files instead of failing with "file already exists"
+file_exists_behavior: OVERWRITE
+
+hooks:
+  # Runs the stop script from the PREVIOUS revision, so it must never fail
+  ApplicationStop:
+    - location: scripts/stop_server.sh
+      timeout: 60
+      runas: root
+  BeforeInstall:
+    - location: scripts/before_install.sh
+      timeout: 300
+      runas: root
+  AfterInstall:
+    - location: scripts/after_install.sh
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: scripts/start_server.sh
+      timeout: 60
+      runas: root
+  ValidateService:
+    - location: scripts/validate_service.sh
+      timeout: 120
+      runas: root

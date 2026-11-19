@@ -1,0 +1,17 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local secrets and build output
+.env
+*.pem
+*.key
+build/
+packaged*.yaml
+
+# Node.js
+node_modules/
+npm-debug.log*
+deploy-info.json
